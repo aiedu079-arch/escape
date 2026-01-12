@@ -11,27 +11,27 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
+            background-color: #000;
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: #000;
         }
 
-        /* 게임 컨테이너: 이미지 비율 유지하며 화면에 꽉 차게 설정 */
+        /* 게임 컨테이너: 이미지의 원본 비율을 유지 */
         .game-container {
             position: relative;
-            width: 100vw;
-            height: 100vh;
-            max-width: 100%;
-            max-height: 100%;
+            display: inline-block;
+            /* 이미지 비율에 맞춰 화면에 꽉 차게 설정 */
+            max-width: 100vw;
+            max-height: 100vh;
         }
 
-        /* 배경 이미지 설정 */
         .background-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover; /* 이미지를 화면에 꽉 채움 */
             display: block;
+            max-width: 100vw;
+            max-height: 100vh;
+            /* contain을 사용해야 좌표가 어긋나지 않습니다 */
+            object-fit: contain; 
         }
 
         /* 클릭 영역 공통 스타일 */
@@ -39,66 +39,59 @@
             position: absolute;
             cursor: pointer;
             z-index: 10;
-            transition: transform 0.2s;
         }
         
-        .hotspot:hover {
-            transform: scale(1.05);
-        }
-
-        /* 1. 피아노 (왼쪽 중앙 - 투명) */
+        /* 1. 피아노 (수정된 좌표) */
         #piano-zone {
-            top: 50%;
-            left: 5%;
-            width: 15%;
-            height: 10%;
-            background-color: rgba(0, 255, 255, 0.2); /* 투명 */
+            top: 45%;
+            left: 2%;
+            width: 28%;
+            height: 35%;
+            background-color: rgba(255, 255, 255, 0.2); /* 위치 확인용 */
         }
 
-        /* 2. 징 (중앙 8시 방향 - 빨간색 반투명) */
+        /* 2. 징 (수정된 좌표) */
         #gong-zone {
-            top: 60%;
+            top: 55%;
             left: 32%;
-            width: 5%;
-            height: 10%;
-            background-color: rgba(255, 0, 0, 0.2); /* 빨간색 반투명 */
+            width: 14%;
+            height: 25%;
+            background-color: rgba(255, 0, 0, 0.3); 
             border-radius: 50%;
         }
 
-        /* 3. 징채 (중앙 플라스틱 박스 안 - 투명) */
+        /* 3. 징채 (수정된 좌표) */
         #mallet-zone {
-            top: 57%;
-            left: 49%;
-            width: 5%;
-            height: 5%;
-            background-color: rgba(0, 255, 0, 0); /* 투명 */
+            top: 65%;
+            left: 51%;
+            width: 10%;
+            height: 12%;
+            background-color: rgba(0, 255, 0, 0.3); 
         }
 
-        /* 알림창(모달) 스타일 */
+        /* 알림창 스타일 */
         .modal {
             display: none;
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.85);
+            background: rgba(0, 0, 0, 0.9);
             color: white;
-            padding: 20px 40px;
-            border: 2px solid #fff;
-            border-radius: 10px;
+            padding: 30px;
+            border: 1px solid #fff;
+            border-radius: 8px;
             text-align: center;
-            z-index: 100;
-            font-family: 'Malgun Gothic', sans-serif;
-            min-width: 300px;
+            z-index: 1000;
+            font-family: sans-serif;
         }
 
         .modal button {
-            margin-top: 15px;
-            padding: 8px 20px;
-            cursor: pointer;
+            margin-top: 20px;
+            padding: 10px 25px;
             background: #fff;
             border: none;
-            font-weight: bold;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -106,7 +99,7 @@
 
     <div class="game-container">
         <img src="https://postfiles.pstatic.net/MjAyMzA3MzFfMTMx/MDAxNjkwNzczNzk2Mzg1.MJLq7IBUZiMNRdWdxV0tpvb1qcLa6uluCaeYoFZ476Ug.UbaEorG0MvfEGXscpfMAoeVbAJ3uKcZMAp5lF4vsfm0g.JPEG.ksiimn239/KakaoTalk_Moim_bJMzaW1cF6e861tVgClaeR6NZcXJIN.jpg?type=w3840" 
-             alt="Music Room" class="background-img">
+             alt="음악실 배경" class="background-img" onerror="this.src='https://via.placeholder.com/1200x800?text=Image+Load+Failed'">
 
         <div id="piano-zone" class="hotspot" onclick="showAlert('음악실 청소를 하다가 기물을 잃어버렸어. 좀 찾아줘!')"></div>
         <div id="gong-zone" class="hotspot" onclick="showAlert('징을 칠 수 있는 도구였던 것 같은데...')"></div>
@@ -120,22 +113,12 @@
 
     <script>
         function showAlert(message) {
-            const modal = document.getElementById('customModal');
-            const text = document.getElementById('modalText');
-            text.innerText = message;
-            modal.style.display = 'block';
+            document.getElementById('modalText').innerText = message;
+            document.getElementById('customModal').style.display = 'block';
         }
 
         function closeModal() {
             document.getElementById('customModal').style.display = 'none';
-        }
-
-        // 배경 클릭 시 모달 닫기 기능 (선택 사항)
-        window.onclick = function(event) {
-            const modal = document.getElementById('customModal');
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
         }
     </script>
 </body>
